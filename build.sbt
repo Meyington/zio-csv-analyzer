@@ -1,6 +1,6 @@
 ThisBuild / version := "0.1.0-SNAPSHOT"
 ThisBuild / scalaVersion := "3.3.6"
-ThisBuild / organization := "com.example"
+ThisBuild / organization := "com.github.meyington"
 
 lazy val commonSettings = Seq(
   scalaVersion := "3.3.6",
@@ -19,8 +19,14 @@ lazy val core = (project in file("core"))
   .settings(commonSettings)
   .settings(
     name := "core",
-    libraryDependencies += "dev.zio" %% "zio" % "2.1.17"
+    libraryDependencies ++= Seq(
+      "dev.zio" %% "zio" % "2.1.17",
+      "dev.zio" %% "zio-test" % "2.1.17" % Test,
+      "dev.zio" %% "zio-test-sbt" % "2.1.17" % Test
+    ),
+    testFrameworks += new TestFramework("zio.test.sbt.ZTestFramework")
   )
+
 
 lazy val app = (project in file("app"))
   .dependsOn(core)
@@ -36,8 +42,3 @@ lazy val app = (project in file("app"))
     ),
     testFrameworks += new TestFramework("zio.test.sbt.ZTestFramework")
   )
-
-libraryDependencies ++= Seq(
-  "dev.zio" %% "zio-test"       % "2.1.17" % Test,
-  "dev.zio" %% "zio-test-sbt"   % "2.1.17" % Test
-)

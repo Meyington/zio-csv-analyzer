@@ -36,8 +36,8 @@ jobs:
           restore-keys: |
             sbt-${{ runner.os }}-
 
-      - name: Compile
-        run: sbt compile
+      - name: Clean and Compile
+        run: sbt clean compile
 
-      - name: Test
+      - name: Run ZIO test suite
         run: sbt test
