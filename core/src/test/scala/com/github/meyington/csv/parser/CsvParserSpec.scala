@@ -6,10 +6,6 @@ import zio.test.Assertion.*
 
 object CsvParserSpec extends ZIOSpecDefault {
 
-  /**
-   * Тестовая реализация CsvParser для проверки функциональности
-   */
-
   class TestCsvParser extends CsvParser {
     override def parseLine(line: String): IO[CsvError, CsvRow] = {
       if (line.isEmpty) ZIO.fail(CsvError.ParseError("Empty line"))
@@ -23,19 +19,19 @@ object CsvParserSpec extends ZIOSpecDefault {
 
   def spec: Spec[Any, CsvError] = suite("CsvParser")(
     suite("parseLine")(
-      test("Строка парсится – да") {
+      test("Успешный парсинг строки") {
         for {
           parser <- ZIO.succeed(new TestCsvParser)
           result <- parser.parseLine("a,b,c")
         } yield assert(result)(equalTo(CsvRow(Vector("a", "b", "c"))))
       },
-      test("Пустая строка как ошибка") {
+      test("Обработка пустой строки как ошибки") {
         for {
           parser <- ZIO.succeed(new TestCsvParser)
           result <- parser.parseLine("").exit
         } yield assert(result)(fails(isSubtype[CsvError.ParseError](anything)))
       },
-      test("Валидация как ошибка") {
+      test("Обработка ошибки валидации") {
         for {
           parser <- ZIO.succeed(new TestCsvParser)
           result <- parser.parseLine("invalid").exit
@@ -44,7 +40,7 @@ object CsvParserSpec extends ZIOSpecDefault {
     ),
 
     suite("parseLines")(
-      test("Парсинг нескольких строк") {
+      test("Успешный парсинг нескольких строк") {
         for {
           parser <- ZIO.succeed(new TestCsvParser)
           result <- parser.parseLines(Seq("a,b", "c,d"))
@@ -53,7 +49,7 @@ object CsvParserSpec extends ZIOSpecDefault {
           CsvRow(Vector("c", "d"))
         )))
       },
-      test("Прерывать парсинг при первой ошибке") {
+      test("Обработка прерывания парсинга при первой ошибке") {
         for {
           parser <- ZIO.succeed(new TestCsvParser)
           result <- parser.parseLines(Seq("a,b", "", "c,d")).exit
