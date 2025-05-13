@@ -56,7 +56,7 @@ object CsvService:
           columnIndex = headers.indexOf(column)
           _ <- ZIO.when(columnIndex < 0)(
             ZIO.fail(new IllegalArgumentException(
-              s"Колонка '$column' не найдена. Доступные колонки: ${headers.mkString(", ")}"
+              s"Колонка '$column' не найдена:( Доступные колонки: ${headers.mkString(", ")}"
             ))
           )
           filtered = lines.tail.filter(_.split(",")(columnIndex) == value)
