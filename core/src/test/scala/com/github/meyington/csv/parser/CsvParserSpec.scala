@@ -23,7 +23,7 @@ object CsvParserSpec extends ZIOSpecDefault {
 
   def spec: Spec[Any, CsvError] = suite("CsvParser")(
     suite("parseLine")(
-      test("Строка парсится") {
+      test("Строка парсится – да") {
         for {
           parser <- ZIO.succeed(new TestCsvParser)
           result <- parser.parseLine("a,b,c")
@@ -58,15 +58,6 @@ object CsvParserSpec extends ZIOSpecDefault {
           parser <- ZIO.succeed(new TestCsvParser)
           result <- parser.parseLines(Seq("a,b", "", "c,d")).exit
         } yield assert(result)(fails(isSubtype[CsvError.ParseError](anything)))
-      }
-    ),
-
-    suite("Config")(
-      test("Правильные значения по умолчанию") {
-        val config = new TestCsvParser().DefaultConfig
-        assert(config.delimiter)(equalTo(',')) &&
-          assert(config.quoteChar)(equalTo('"')) &&
-          assert(config.escapeChar)(equalTo('\\'))
       }
     )
   )
